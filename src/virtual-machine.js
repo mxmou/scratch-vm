@@ -1569,6 +1569,30 @@ class VirtualMachine extends EventEmitter {
     configureScratchLinkSocketFactory (factory) {
         this.runtime.configureScratchLinkSocketFactory(factory);
     }
+
+    /**
+     * Type representation for scalar variables.
+     * @const {string}
+     */
+    static get SCALAR_VARIABLE () {
+        return Variable.SCALAR_TYPE;
+    }
+
+    /**
+     * Type representation for list variables.
+     * @const {string}
+     */
+    static get LIST_VARIABLE () {
+        return Variable.LIST_TYPE;
+    }
+
+    /**
+     * Type representation for message variables.
+     * @const {string}
+     */
+    static get BROADCAST_MESSAGE_VARIABLE () {
+        return Variable.BROADCAST_MESSAGE_TYPE;
+    }
 }
 
 module.exports = VirtualMachine;
