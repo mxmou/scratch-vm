@@ -57,6 +57,12 @@ class Target extends EventEmitter {
          */
         this.comments = {};
         /**
+         * Source code for this target's blocks.
+         * null if it needs to be generated.
+         * @type {string|null}
+         */
+        this.code = null;
+        /**
          * Dictionary of custom state for this target.
          * This can be used to store target-specific custom state for blocks which need it.
          * TODO: do we want to persist this in SB3 files?

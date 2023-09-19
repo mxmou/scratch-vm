@@ -1080,6 +1080,7 @@ class RenderedTarget extends Target {
             rotationStyle: this.rotationStyle,
             comments: this.comments,
             blocks: this.blocks._blocks,
+            code: this.code,
             variables: this.variables,
             costumes: costumes,
             sounds: this.getSounds(),
