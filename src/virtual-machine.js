@@ -28,16 +28,12 @@ require('canvas-toBlob');
 const RESERVED_NAMES = ['_mouse_', '_stage_', '_edge_', '_myself_', '_random_'];
 
 const CORE_EXTENSIONS = [
-    // 'motion',
-    // 'looks',
-    // 'sound',
-    // 'events',
-    // 'control',
-    // 'sensing',
-    // 'operators',
-    // 'variables',
-    // 'myBlocks'
+    'pen',
+    'videoSensing'
 ];
+
+// The Music extension is loaded when an audio engine is available
+const MUSIC_EXTENSION = 'music';
 
 /**
  * Handles connections between blocks, stage, and extensions.
@@ -1096,6 +1092,7 @@ class VirtualMachine extends EventEmitter {
      */
     attachAudioEngine (audioEngine) {
         this.runtime.attachAudioEngine(audioEngine);
+        this.extensionManager.loadExtensionIdSync(MUSIC_EXTENSION);
     }
 
     /**

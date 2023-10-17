@@ -180,9 +180,6 @@ class Scratch3VideoSensingBlocks {
         if (stage) {
             return stage.videoState;
         }
-        // Though the default value for the stage is normally 'on', we need to default
-        // to 'off' here to prevent the video device from briefly activating
-        // while waiting for stage targets to be installed that say it should be off
         return VideoState.OFF;
     }
 
@@ -410,7 +407,7 @@ class Scratch3VideoSensingBlocks {
         // first added to a project, and is overwritten by a PROJECT_LOADED
         // event listener that later calls updateVideoDisplay
         if (this.firstInstall) {
-            this.globalVideoState = VideoState.ON;
+            this.globalVideoState = VideoState.OFF;
             this.globalVideoTransparency = 50;
             this.updateVideoDisplay();
             this.firstInstall = false;
