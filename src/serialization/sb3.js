@@ -7,6 +7,7 @@
 const vmPackage = require('../../package.json');
 const Blocks = require('../engine/blocks');
 const Sprite = require('../sprites/sprite');
+const RenderedTarget = require('../sprites/rendered-target');
 const Variable = require('../engine/variable');
 const Comment = require('../engine/comment');
 const MonitorRecord = require('../engine/monitor-record');
@@ -1299,6 +1300,18 @@ const deserialize = function (json, runtime, zip, isSingleSprite) {
             monitorObjects.map(monitorDesc => deserializeMonitor(monitorDesc, runtime, targets, extensions));
             return targets;
         })
+        .then(targets => targets.map(target => {
+            if (target.isStage) {
+                // In Scratch, video is only enabled if videoState is ON
+                // and the video sensing extension is loaded.
+                // TB3 always loads the extension, so videoState needs to be
+                // set to OFF if the project doesn't use video sensing blocks.
+                if (!extensions.extensionIDs.has('videoSensing')) {
+                    target.videoState = RenderedTarget.VIDEO_STATE.OFF;
+                }
+            }
+            return target;
+        }))
         .then(targets => ({
             targets,
             extensions
