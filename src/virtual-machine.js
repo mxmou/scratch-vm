@@ -29,11 +29,16 @@ const RESERVED_NAMES = ['_mouse_', '_stage_', '_edge_', '_myself_', '_random_'];
 
 const CORE_EXTENSIONS = [
     'pen',
-    'videoSensing'
+    'videoSensing',
+    'translate',
+    'makeymakey'
 ];
 
-// The Music extension is loaded when an audio engine is available
-const MUSIC_EXTENSION = 'music';
+// These extensions are loaded when an audio engine is available
+const AUDIO_EXTENSIONS = [
+    'music',
+    'text2speech'
+];
 
 /**
  * Handles connections between blocks, stage, and extensions.
@@ -1092,7 +1097,9 @@ class VirtualMachine extends EventEmitter {
      */
     attachAudioEngine (audioEngine) {
         this.runtime.attachAudioEngine(audioEngine);
-        this.extensionManager.loadExtensionIdSync(MUSIC_EXTENSION);
+        for (const id of AUDIO_EXTENSIONS) {
+            this.extensionManager.loadExtensionIdSync(id);
+        }
     }
 
     /**
