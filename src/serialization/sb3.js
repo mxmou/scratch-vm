@@ -464,7 +464,7 @@ const serializeTarget = function (target, extensions) {
     obj.broadcasts = vars.broadcasts;
     [obj.blocks, targetExtensions] = serializeBlocks(target.blocks);
     obj.comments = serializeComments(target.comments);
-    obj.code = target.code;
+    obj.tb3Code = target.code;
 
     // TODO remove this check/patch when (#1901) is fixed
     if (target.currentCostume < 0 || target.currentCostume >= target.costumes.length) {
@@ -990,7 +990,10 @@ const parseScratchObject = function (object, runtime, extensions, zip, assets) {
     if (object.hasOwnProperty('textToSpeechLanguage')) {
         target.textToSpeechLanguage = object.textToSpeechLanguage;
     }
-    if (object.hasOwnProperty('code')) {
+    if (object.hasOwnProperty('tb3Code')) {
+        target.code = object.tb3Code;
+    } else if (object.hasOwnProperty('code')) {
+        // TB3 beta v1.1.2 and eariler used "code" instead of "tb3Code"
         target.code = object.code;
     }
     if (object.hasOwnProperty('variables')) {
