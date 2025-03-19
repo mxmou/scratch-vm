@@ -1222,6 +1222,18 @@ class Blocks {
         // Update `topLevel` property on the top block.
         if (this._blocks[topBlockId]) this._blocks[topBlockId].topLevel = false;
     }
+
+    /**
+     * Find which block categories are used.
+     * @return {Set.<string>} A set of category IDs.
+     */
+    getCategoryIds () {
+        const categoryIds = new Set();
+        for (const block of Object.values(this._blocks)) {
+            categoryIds.add(block.opcode.split('_')[0]);
+        }
+        return categoryIds;
+    }
 }
 
 /**
