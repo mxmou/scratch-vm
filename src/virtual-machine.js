@@ -31,7 +31,12 @@ const CORE_EXTENSIONS = [
     'pen',
     'videoSensing',
     'translate',
-    'makeymakey'
+    'makeymakey',
+    'microbit',
+    'ev3',
+    'boost',
+    'wedo2',
+    'gdxfor'
 ];
 
 // These extensions are loaded when an audio engine is available
