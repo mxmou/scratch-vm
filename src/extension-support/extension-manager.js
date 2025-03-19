@@ -88,6 +88,13 @@ class ExtensionManager {
         this._loadedExtensions = new Map();
 
         /**
+         * Map of service names to extension info.
+         * @type {Map.<string,ExtensionMetadata>}
+         * @private
+         */
+        this._extensionInfo = new Map();
+
+        /**
          * Keep a reference to the runtime so we can construct internal extension objects.
          * TODO: remove this in favor of extensions accessing the runtime as a service.
          * @type {Runtime}
@@ -162,6 +169,18 @@ class ExtensionManager {
             this.pendingExtensions.push({extensionURL, resolve, reject});
             dispatch.addWorker(new ExtensionWorker());
         });
+    }
+
+    /**
+     * Returns the metadata of an already loaded extension
+     * @param {string} extensionId - the extension's ID or URL
+     * @returns {ExtensionMetadata} extension info
+     */
+    getExtensionInfo (extensionId) {
+        if (!this.isExtensionLoaded(extensionId)) {
+            throw new Error(`Extension ${extensionId} not loaded`);
+        }
+        return this._extensionInfo.get(this._loadedExtensions.get(extensionId));
     }
 
     /**
@@ -245,6 +264,7 @@ class ExtensionManager {
      */
     _registerExtensionInfo (serviceName, extensionInfo) {
         extensionInfo = this._prepareExtensionInfo(serviceName, extensionInfo);
+        this._extensionInfo.set(serviceName, extensionInfo);
         dispatch.call('runtime', '_registerExtensionPrimitives', extensionInfo).catch(e => {
             log.error(`Failed to register primitives for extension on service ${serviceName}:`, e);
         });
