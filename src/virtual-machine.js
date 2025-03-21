@@ -309,7 +309,7 @@ class VirtualMachine extends EventEmitter {
     /**
      * Load a Scratch project from a .sb, .sb2, .sb3 or json string.
      * @param {string | object} input A json string, object, or ArrayBuffer representing the project to load.
-     * @return {!Promise} Promise that resolves after targets are installed.
+     * @return {!Promise.<Set<string>>} Promise that resolves to a set of extension IDs after targets are installed.
      */
     loadProject (input) {
         if (typeof input === 'object' && !(input instanceof ArrayBuffer) &&
@@ -357,7 +357,10 @@ class VirtualMachine extends EventEmitter {
 
         return validationPromise
             .then(validatedInput => this.deserializeProject(validatedInput[0], validatedInput[1]))
-            .then(() => this.runtime.emitProjectLoaded())
+            .then((extensionIDs) => {
+                this.runtime.emitProjectLoaded();
+                return extensionIDs;
+            })
             .catch(error => {
                 // Intentionally rejecting here (want errors to be handled by caller)
                 if (error.hasOwnProperty('validationError')) {
@@ -489,7 +492,7 @@ class VirtualMachine extends EventEmitter {
      * Load a project from a Scratch JSON representation.
      * @param {string} projectJSON JSON string representing a project.
      * @param {?JSZip} zip Optional zipped project containing assets to be loaded.
-     * @returns {Promise} Promise that resolves after the project has loaded
+     * @returns {Promise.<Set<string>>} Promise that resolves to a set of extension IDs after the project has loaded
      */
     deserializeProject (projectJSON, zip) {
         // Clear the current runtime
@@ -527,7 +530,7 @@ class VirtualMachine extends EventEmitter {
      * @param {Array.<Target>} targets - the targets to be installed
      * @param {ImportedExtensionsInfo} extensions - metadata about extensions used by these targets
      * @param {boolean} wholeProject - set to true if installing a whole project, as opposed to a single sprite.
-     * @returns {Promise} resolved once targets have been installed
+     * @returns {Promise.<Set<string>>} resolved to a set of extension IDs once targets have been installed
      */
     installTargets (targets, extensions, wholeProject) {
         const extensionPromises = [];
@@ -571,6 +574,8 @@ class VirtualMachine extends EventEmitter {
             this.emitWorkspaceUpdate();
             this.runtime.setEditingTarget(this.editingTarget);
             this.runtime.ioDevices.cloud.setStage(this.runtime.getTargetForStage());
+
+            return extensions.extensionIDs;
         });
     }
 
@@ -578,7 +583,7 @@ class VirtualMachine extends EventEmitter {
      * Add a sprite, this could be .sprite2 or .sprite3. Unpack and validate
      * such a file first.
      * @param {string | object} input A json string, object, or ArrayBuffer representing the project to load.
-     * @return {!Promise} Promise that resolves after targets are installed.
+     * @return {!Promise.<Set<string>>} Promise that resolves to a set of extension IDs after targets are installed.
      */
     addSprite (input) {
         const errorPrefix = 'Sprite Upload Error:';
@@ -629,7 +634,7 @@ class VirtualMachine extends EventEmitter {
      * Add a single sprite from the "Sprite2" (i.e., SB2 sprite) format.
      * @param {object} sprite Object representing 2.0 sprite to be added.
      * @param {?ArrayBuffer} zip Optional zip of assets being referenced by json
-     * @returns {Promise} Promise that resolves after the sprite is added
+     * @returns {Promise.<Set<string>>} Promise that resolves to a set of extension IDs after the sprite is added
      */
     _addSprite2 (sprite, zip) {
         // Validate & parse
@@ -644,7 +649,7 @@ class VirtualMachine extends EventEmitter {
      * Add a single sb3 sprite.
      * @param {object} sprite Object rperesenting 3.0 sprite to be added.
      * @param {?ArrayBuffer} zip Optional zip of assets being referenced by target json
-     * @returns {Promise} Promise that resolves after the sprite is added
+     * @returns {Promise.<Set<string>>} Promise that resolves to a set of extension IDs after the sprite is added
      */
     _addSprite3 (sprite, zip) {
         // Validate & parse
